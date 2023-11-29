@@ -40,17 +40,7 @@ bool Renderer::CreateWindow(const std::string& title, int width, int height)
 
 void Renderer::PresentCanvas(const Canvas* canvas)
 {
-	SDL_Rect srcrect;
-	SDL_Rect dstrect;
 
-	srcrect.x = 0;
-	srcrect.y = 0;
-	srcrect.w = 32;
-	srcrect.h = 32;
-	dstrect.x = 640 / 2;
-	dstrect.y = 480 / 2;
-	dstrect.w = 0;
-	dstrect.h = 0;
 	// copy canvas texture to renderer
 	SDL_RenderCopy(renderer, canvas->m_texture, nullptr, nullptr);
 	
