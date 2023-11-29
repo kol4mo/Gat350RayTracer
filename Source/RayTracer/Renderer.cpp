@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include <iostream>
+#include "Canvas.h"
 
 bool Renderer::Initialize() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -22,7 +23,7 @@ void Renderer::Shutdown() {
 
 bool Renderer::CreateWindow(const std::string& title, int width, int height)
 {
-	window = SDL_CreateWindow(title.c_str(), width, height, width, height, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(title.c_str(), 100, 100, width, height, SDL_WINDOW_SHOWN);
 	if (!window) {
 		std::cerr << "SDL Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
@@ -35,5 +36,25 @@ bool Renderer::CreateWindow(const std::string& title, int width, int height)
 		return false;
 	}
 	return true;
+}
+
+void Renderer::PresentCanvas(const Canvas* canvas)
+{
+	SDL_Rect srcrect;
+	SDL_Rect dstrect;
+
+	srcrect.x = 0;
+	srcrect.y = 0;
+	srcrect.w = 32;
+	srcrect.h = 32;
+	dstrect.x = 640 / 2;
+	dstrect.y = 480 / 2;
+	dstrect.w = 0;
+	dstrect.h = 0;
+	// copy canvas texture to renderer
+	SDL_RenderCopy(renderer, canvas->m_texture, nullptr, nullptr);
+	
+	// present renderer to screen
+	SDL_RenderPresent(renderer);
 }
 
