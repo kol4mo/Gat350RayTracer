@@ -4,7 +4,10 @@
 #include "Random.h"
 #include "Camera.h"
 #include "Scene.h"
+#include "Material.h"
+#include "Sphere.h"
 
+#include <memory>
 int main(int, char**) {
 	std::cout << "Hello World!\n";
 
@@ -17,6 +20,16 @@ int main(int, char**) {
 
 	Scene scene; // sky color could be set with the top and bottom color
 	scene.SetCamera(camera);
+
+	// create material
+	auto material = std::make_shared<Lambertian>(color3_t{ 0, 0, 1 });
+	// create objects -> add to scene
+	for (int i = 0; i < 10; i++)
+	{
+		auto sphere = std::make_unique<Sphere>(glm::vec3{ random(-3, 3), random(-3,3), random(-1, -10)}, 1, material);
+		scene.AddObject(std::move(sphere));
+	}
+
 	bool quit = false;
 	while (!quit) {
 		SDL_Event event;
