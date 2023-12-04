@@ -32,7 +32,7 @@
 		// generate random vectors between -1 <-> +1, return vector if length is less than 1
 		do
 		{
-			v = random({ -1,-1,-1 }, { 1, 1, 1 });
+			v = glm::vec3{ random(-1,1),random(-1,1), random(-1,1) };
 		} while (glm::length2(v) >= 1.0f);
 
 			return v;

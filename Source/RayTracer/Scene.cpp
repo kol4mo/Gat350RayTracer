@@ -4,7 +4,8 @@
 
 #include <glm/glm.hpp>
 
-void Scene::Render(Canvas& canvas)
+
+void Scene::Render(Canvas& canvas, int numSamples)
 {
 	// cast ray for each point (pixel) on the canvas
 	for (int y = 0; y < canvas.GetSize().y; y++)
@@ -13,25 +14,36 @@ void Scene::Render(Canvas& canvas)
 		{
 			// create vec2 pixel from canvas x,y
 			glm::vec2 pixel = glm::vec2{ x, y };
+
+			// set initial color
+			color3_t color{ 0 };
+			// cast a ray for each sample, accumulate color value for each sample
+			// each ray will have a random offset
+			for (int sample = 0; sample < numSamples; sample++)
+			{
 				// get normalized (0 - 1) point coordinates from pixel
-			glm::vec2 point = pixel / canvas.GetSize();
+				// add random x and y offset (0-1) to each pixel
+				glm::vec2 point = (pixel + glm::vec2{ random01(), random01() }) / canvas.GetSize();
 				// flip y
 				point.y = 1.0f - point.y;
 
-			// create ray from camera
+				// create ray from camera
 				ray_t ray = m_camera->GetRay(point);
 
 				// cast ray into scene
-				// set color value from trace
+				// add color value from trace
 				raycastHit_t raycastHit;
-				color3_t color = Trace(ray, 0, 100, raycastHit);
+				color += Trace(ray, 0, 100, raycastHit, m_depth);
+			}
 
 			// draw color to canvas point (pixel)
+			// get average color (average = (color + color + color) / number of samples)
+			color /= numSamples;
 			canvas.DrawPoint(pixel, color4_t(color, 1));
 		}
 	}
 }
-color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit)
+color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit, int depth)
 {
 	bool rayHit = false;
 	float closestDistance = maxDistance;
@@ -54,12 +66,15 @@ color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, ra
 		ray_t scattered;
 		color3_t color;
 
-		if (raycastHit.material->Scatter(ray, raycastHit, color, scattered))
+		// check if maximum depth (number of bounces) is reached, get color from material and scattered ray
+		if (depth > 0 && raycastHit.material->Scatter(ray, raycastHit, color, scattered))
 		{
-			return raycastHit.normal;
+			// recursive function, call self and modulate (multiply) colors of depth bounces
+			return color * Trace(scattered, minDistance, maxDistance, raycastHit, depth - 1);
 		}
 		else
 		{
+			// reached maximum depth of bounces (color is black)
 			return color3_t{ 0, 0, 0 };
 		}
 	}
