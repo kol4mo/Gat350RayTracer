@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 
+#define FLT_EPSILON      1.192092896e-07F
+
 template <typename T>
 inline T lerp(const T& a, const T& b, float t) {
 	return (a * (1 - t)) + (t * b);
@@ -19,3 +21,9 @@ inline glm::vec3 reflect(const glm::vec3& v, const glm::vec3& n)
 {
 	return v - (n * dot(n, v)) * 2.0f;
 }	
+
+inline bool approximately(float value1, float value2)
+{
+	// check if the difference between the values is less than epsilon
+	return (fabs(value2 - value1) < FLT_EPSILON);
+}
