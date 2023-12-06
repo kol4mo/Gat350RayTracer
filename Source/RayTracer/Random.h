@@ -18,7 +18,7 @@
 	{
 		if (min > max) std::swap(min, max);
 		
-		float value = min + (max - min) * random01();
+		float value = min + ((max - min) * random01());
 		return value;
 	}
 
@@ -33,7 +33,7 @@
 		do
 		{
 			v = glm::vec3{ random(-1,1),random(-1,1), random(-1,1) };
-		} while (glm::length2(v) >= 1.0f);
+		} while (glm::length2(v) <= 1.0f);
 
 			return v;
 	}

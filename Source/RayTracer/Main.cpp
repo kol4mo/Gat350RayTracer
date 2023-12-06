@@ -14,14 +14,17 @@
 
 void InitScene01(Scene& scene, const Canvas& canvas);
 void InitScene02(Scene& scene, const Canvas& canvas);
+void InitCornellBox(Scene& scene, const Canvas& canvas);
+void InitCornellBoxPlane(Scene& scene, const Canvas& canvas);
+
 
 int main(int, char**) {
 	std::cout << "Hello World!\n";
 
 	const int width = 400;
 	const int height = 300;
-	const int depth = 5;
-	const int samples = 20;
+	const int depth = 6;
+	const int samples = 200;
 
 	seedRandom((unsigned int)time(nullptr));
 
@@ -29,8 +32,8 @@ int main(int, char**) {
 	renderer.Initialize();
 	renderer.CreateWindow("hi", width, height);
 	Canvas canvas(width, height, renderer);
-	Scene scene( glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f });// sky color could be set with the top and bottom color
-	InitScene02(scene, canvas);
+	Scene scene( glm::vec3{ 1 }, glm::vec3{ 0.5f, 0.7f, 1.0f});// sky color could be set with the top and bottom color
+	InitCornellBox(scene, canvas);
 	// render scene 
 	canvas.Clear({ 0, 0, 0, 1 });
 	scene.Render(canvas, samples, depth);
@@ -111,4 +114,68 @@ void InitScene02(Scene& scene, const Canvas& canvas)
 	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
 	mesh->Load("models/cube-1.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
 	scene.AddObject(std::move(mesh));
+}
+
+void InitCornellBox(Scene& scene, const Canvas& canvas) {
+	float aspectRatio = canvas.GetSize().x / canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 1, 3 }, glm::vec3{ 0, 1, -1 }, glm::vec3{ 0, 1, 0 }, 70.0f, aspectRatio);
+	scene.SetCamera(camera);
+
+	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 1, -3 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 4.0f });
+	scene.AddObject(std::move(mesh));
+
+	auto sphere = std::make_unique<Sphere>(glm::vec3{ 1, -.5f, 0 }, 0.5f, std::make_shared<Lambertian>(color3_t{ 1 }));
+	scene.AddObject(std::move(sphere));
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(glm::vec3{ 0.7}));
+	mesh->Load("models/cube-1.obj", glm::vec3{ -0.5, 0, -0.5 }, glm::vec3{ 0, 90, 0 }, glm::vec3{ 1.0f });
+	scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 1, 2 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 4.0f });
+	//scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 0.2f, 0.2f }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ -2, 1, -1 }, glm::vec3{ 0, 90, 0 }, glm::vec3{4.0f});
+	scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0.2f, 1, 0.2f }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 2, 1, -1 }, glm::vec3{ 0, 270, 0 }, glm::vec3{ 4.0f });
+	scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, -1, -1 }, glm::vec3{ 270, 0, 0 }, glm::vec3{ 4.0f });
+	scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 3, -1 }, glm::vec3{ 90, 0, 0 }, glm::vec3{ 4.0f });
+	scene.AddObject(std::move(mesh));
+
+	mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(glm::vec3{1, 1, 1}, 5.0f));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 2.9, -1 }, glm::vec3{ 90, 0, 0 }, glm::vec3{ 1.0f });
+	scene.AddObject(std::move(mesh));
+}
+
+void InitCornellBoxPlane(Scene& scene, const Canvas& canvas) {
+	float aspectRatio = canvas.GetSize().x / canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 1, 3 }, glm::vec3{ 0, 1, -1 }, glm::vec3{ 0, 1, 0 }, 70.0f, aspectRatio);
+	scene.SetCamera(camera);
+	auto sphere = std::make_unique<Sphere>(glm::vec3{ 1, -.5f, 0 }, 0.5f, std::make_shared<Lambertian>(color3_t{ 1 }));
+	scene.AddObject(std::move(sphere));
+	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(glm::vec3{ 1, 1, 1 }));
+	mesh->Load("models/cube-1.obj", glm::vec3{ -0.5, 0, -0.5 }, glm::vec3{ 0, 0, 0 }, glm::vec3{ 1.0f });
+	scene.AddObject(std::move(mesh));
+	mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(glm::vec3{ 1, 1, 1 }, 5.0f));
+	mesh->Load("models/cube-1.obj", glm::vec3{ 0, 2.9, -1 }, glm::vec3{ 90, 0, 0 }, glm::vec3{ 1.0f });
+	scene.AddObject(std::move(mesh));
+	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 1, -3 }, glm::vec3{ 0, 0, 1 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+	scene.AddObject(std::move(plane));
+	plane = std::make_unique<Plane>(glm::vec3{ 0, -1, -1 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+	scene.AddObject(std::move(plane));
+	plane = std::make_unique<Plane>(glm::vec3{ 0, 3, -1 }, glm::vec3{ 0, -1, 0 }, std::make_shared<Lambertian>(color3_t{ 1 }));
+	scene.AddObject(std::move(plane));
+	plane = std::make_unique<Plane>(glm::vec3{ -2, 1, -1 }, glm::vec3{ 1, 0, 0 }, std::make_shared<Lambertian>(color3_t{ 1, 0 ,0 }));
+	scene.AddObject(std::move(plane));
+	plane = std::make_unique<Plane>(glm::vec3{ 2, 1, -1 }, glm::vec3{ -1, 0, 0 }, std::make_shared<Lambertian>(color3_t{ 0, 1 ,0 }));
+	scene.AddObject(std::move(plane));
 }
