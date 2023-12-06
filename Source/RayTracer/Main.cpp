@@ -8,6 +8,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Triangle.h"
+#include "Mesh.h"
 #include <memory>
 #include <glm/gtx/color_space.hpp>
 
@@ -29,7 +30,7 @@ int main(int, char**) {
 	renderer.CreateWindow("hi", width, height);
 	Canvas canvas(width, height, renderer);
 	Scene scene( glm::vec3{ 1.0f }, glm::vec3{ 0.5f, 0.7f, 1.0f });// sky color could be set with the top and bottom color
-	InitScene01(scene, canvas);
+	InitScene02(scene, canvas);
 	// render scene 
 	canvas.Clear({ 0, 0, 0, 1 });
 	scene.Render(canvas, samples, depth);
@@ -95,19 +96,19 @@ void InitScene01(Scene& scene, const Canvas& canvas)
 	scene.AddObject(std::move(plane));
 }
 
-//void InitScene02(Scene& scene, const Canvas& canvas)
-//{
-//	float aspectRatio = canvas.GetSize().x / canvas.GetSize().y;
-//	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 2, 10 }, glm::vec3{ 0, 1, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
-//	scene.SetCamera(camera);
-//
-//	//auto triangle = std::make_unique<Triangle>(glm::vec3{ -1, 0, 0 }, glm::vec3{ 1, 0, 0 }, glm::vec3{ 0, 2, 0 }, std::make_shared<Lambertian>(color3_t{ 1, 0, 0 }));
-//	//scene.AddObject(std::move(triangle));
-//
-//	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
-//	scene.AddObject(std::move(plane));
-//
-//	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
-//	mesh->Load("models/cube.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
-//	scene.AddObject(std::move(mesh));
-//}
+void InitScene02(Scene& scene, const Canvas& canvas)
+{
+	float aspectRatio = canvas.GetSize().x / canvas.GetSize().y;
+	std::shared_ptr<Camera> camera = std::make_shared<Camera>(glm::vec3{ 0, 2, 10 }, glm::vec3{ 0, 1, 0 }, glm::vec3{ 0, 1, 0 }, 20.0f, aspectRatio);
+	scene.SetCamera(camera);
+
+	//auto triangle = std::make_unique<Triangle>(glm::vec3{ -1, 0, 0 }, glm::vec3{ 1, 0, 0 }, glm::vec3{ 0, 2, 0 }, std::make_shared<Lambertian>(color3_t{ 1, 0, 0 }));
+	//scene.AddObject(std::move(triangle));
+
+	auto plane = std::make_unique<Plane>(glm::vec3{ 0, 0, 0 }, glm::vec3{ 0, 1, 0 }, std::make_shared<Lambertian>(color3_t{ 0.2f }));
+	scene.AddObject(std::move(plane));
+
+	auto mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 0, 0, 1 }));
+	mesh->Load("models/cube-1.obj", glm::vec3{ 0, 0.5f, 0 }, glm::vec3{ 0, 45, 0 });
+	scene.AddObject(std::move(mesh));
+}
