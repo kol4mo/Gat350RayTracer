@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Triangle.h"
 #include <memory>
 #include <glm/gtx/color_space.hpp>
 int main(int, char**) {
@@ -52,7 +53,7 @@ int main(int, char**) {
 
 	// render scene 
 	canvas.Clear({ 0, 0, 0, 1 });
-	scene.Render(canvas, 100);
+	scene.Render(canvas, 10);
 	canvas.Update();
 
 	bool quit = false;
