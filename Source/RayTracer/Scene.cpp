@@ -1,11 +1,12 @@
 #include "Scene.h"
 #include "Canvas.h"
 #include "MathUtils.h"
-
+#include <iostream>
+#include <iomanip>
 #include <glm/glm.hpp>
 
 
-void Scene::Render(Canvas& canvas, int numSamples)
+void Scene::Render(Canvas& canvas, int numSamples, int depth)
 {
 	// cast ray for each point (pixel) on the canvas
 	for (int y = 0; y < canvas.GetSize().y; y++)
@@ -33,7 +34,7 @@ void Scene::Render(Canvas& canvas, int numSamples)
 				// cast ray into scene
 				// add color value from trace
 				raycastHit_t raycastHit;
-				color += Trace(ray, 0, 100, raycastHit, m_depth);
+				color += Trace(ray, 0, 100, raycastHit, depth);
 			}
 
 			// draw color to canvas point (pixel)
@@ -41,6 +42,7 @@ void Scene::Render(Canvas& canvas, int numSamples)
 			color /= numSamples;
 			canvas.DrawPoint(pixel, color4_t(color, 1));
 		}
+		std::cout << std::setprecision(2) << std::setw(5) << ((y / (float)canvas.GetSize().y) * 100) << "%\n";
 	}
 }
 color3_t Scene::Trace(const ray_t& ray, float minDistance, float maxDistance, raycastHit_t& raycastHit, int depth)
