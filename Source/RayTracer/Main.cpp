@@ -23,8 +23,8 @@ int main(int, char**) {
 
 	const int width = 400;
 	const int height = 300;
-	const int depth = 6;
-	const int samples = 200;
+	const int depth = 8;
+	const int samples = 1000;
 
 	seedRandom((unsigned int)time(nullptr));
 
@@ -33,7 +33,7 @@ int main(int, char**) {
 	renderer.CreateWindow("hi", width, height);
 	Canvas canvas(width, height, renderer);
 	Scene scene( glm::vec3{ 1 }, glm::vec3{ 0.5f, 0.7f, 1.0f});// sky color could be set with the top and bottom color
-	InitCornellBox(scene, canvas);
+	InitScene01(scene, canvas);
 	// render scene 
 	canvas.Clear({ 0, 0, 0, 1 });
 	scene.Render(canvas, samples, depth);
@@ -132,8 +132,8 @@ void InitCornellBox(Scene& scene, const Canvas& canvas) {
 	scene.AddObject(std::move(mesh));
 
 	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 1, 1 }));
-	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 1, 2 }, glm::vec3{ 0, 180, 0 }, glm::vec3{ 4.0f });
-	//scene.AddObject(std::move(mesh));
+	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 1, 1 }, glm::vec3{ 180, 0, 0 }, glm::vec3{ 4.0f });
+	scene.AddObject(std::move(mesh));
 
 	mesh = std::make_unique<Mesh>(std::make_shared<Lambertian>(color3_t{ 1, 0.2f, 0.2f }));
 	mesh->Load("models/quad-1.obj", glm::vec3{ -2, 1, -1 }, glm::vec3{ 0, 90, 0 }, glm::vec3{4.0f});
@@ -151,7 +151,7 @@ void InitCornellBox(Scene& scene, const Canvas& canvas) {
 	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 3, -1 }, glm::vec3{ 90, 0, 0 }, glm::vec3{ 4.0f });
 	scene.AddObject(std::move(mesh));
 
-	mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(glm::vec3{1, 1, 1}, 5.0f));
+	mesh = std::make_unique<Mesh>(std::make_shared<Emissive>(glm::vec3{1, 1, 1}, 10.0f));
 	mesh->Load("models/quad-1.obj", glm::vec3{ 0, 2.9, -1 }, glm::vec3{ 90, 0, 0 }, glm::vec3{ 1.0f });
 	scene.AddObject(std::move(mesh));
 }
